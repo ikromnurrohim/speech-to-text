@@ -1,0 +1,120 @@
+
+<!doctype html>
+	<head>
+		<style>
+            @import url('https://fonts.googleapis.com/css2?family=Muli:wght@400;700&display=swap');
+
+			/* CSS comes here */
+			body {
+			    font-family: 'Muli';
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #656565;
+			}
+            .container {
+                width: 500px;
+                border-radius: 10px;
+                padding: 20px;
+                background: #FFFFFF;
+                position: relative;
+            }
+            #ikrom{
+                position: absolute;
+                bottom: 5px;
+                right: 20px;
+                font-family: 'Muli', sans-serif;
+                font-weight: 400;
+            }
+			button {
+			    padding:10px;
+			    background-color:#6a67ce;
+			    color: #FFFFFF;
+			    border: 0px;
+			    cursor:pointer;
+			    border-radius: 5px;
+			}
+			#output {
+			    background-color:#F9F9F9;
+			    padding:10px;
+			    width: 100%;
+			    margin-top:20px;
+			    line-height:30px;
+                position: relative;
+			}
+			.hide {
+			    display:none;
+			}
+			.show {
+			    display:block;
+			}
+            
+            #textOutput{
+                width: 400px;
+                outline: none;
+                background: transparent;
+                border: 1px solid gray;
+            }
+            #copy {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+            }
+		</style>
+		<title>Suara ke Tulisan</title>
+	</head>
+	<body>
+        
+        <div class="container">
+		<h2>Mengubah suara ke Tulisan</h2>
+        <p>Klik tombol di bawah dan mulai bicara seuatu</p>
+        <p><button type="button" onclick="runSpeechRecognition()">Mulai Bicara</button> &nbsp; <span id="action"></span></p>
+        <!-- <div disabled id="output" class="hide"></div> -->
+        <div id="output" class="hide">
+            <textarea id="textOutput" onclick="copyValue()" value=""></textarea>
+            <button onclick="copyValue()" id="copy">Copy</button>
+        </div>
+        <span id="ikrom">@ikromnurrohim</span>
+    </div>
+		<script>
+			/* JS comes here */
+            function copyValue(){
+                var text = document.getElementById('textOutput');
+                text.select();
+                text.setSelectionRange(0, 9999999);
+                document.execCommand("copy");
+                alert('Text Success copy to clipboard');
+            }
+		    function runSpeechRecognition() {
+		        // get output div reference
+		        var output = document.getElementById("output");
+		        var textOutput = document.getElementById("textOutput");
+		        // get action element reference
+		        var action = document.getElementById("action");
+                // new speech recognition object
+                var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+                var recognition = new SpeechRecognition();
+            
+                // This runs when the speech recognition service starts
+                recognition.onstart = function() {
+                    action.innerHTML = "<small>mendengarkan, silahkan bicara...</small>";
+                };
+                
+                recognition.onspeechend = function() {
+                    action.innerHTML = "<small>berhenti mendengarkan, kamu sudah selesai bicara...</small>";
+                    recognition.stop();
+                }
+              
+                // This runs when the speech recognition service returns result
+                recognition.onresult = function(event) {
+                    var transcript = event.results[0][0].transcript;
+                    textOutput.innerHTML = transcript ;
+                    output.classList.remove("hide");
+                };
+              
+                 // start recognition
+                 recognition.start();
+	        }
+		</script>
+	</body>
+</html>
